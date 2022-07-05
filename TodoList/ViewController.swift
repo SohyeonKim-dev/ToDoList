@@ -38,6 +38,17 @@ class ViewController: UIViewController {
         })
         self.present(alert, animated: true, completion: nil)
     }
+    
+    func saveTasks() {
+        let data = self.tasks.map{
+            [
+                "title": $0.title,
+                "done": $0.done
+            ]
+        }
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(data, forKey: "tasks")
+    }
 }
 
 // 코드의 가독성을 위해 extension을 사용
