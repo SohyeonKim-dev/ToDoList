@@ -31,7 +31,7 @@ class ViewController: UIViewController {
     
     @objc func doneButtonTap(){
         self.navigationItem.leftBarButtonItem = editButton
-        self.tableView.setEditing(false , animated: true)
+        self.tableView.setEditing(false, animated: true)
     }
 
     @IBAction func tapEditButton(_ sender: UIBarButtonItem) {
@@ -101,6 +101,30 @@ extension ViewController: UITableViewDataSource {
         }
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        self.tasks.remove(at: indexPath.row)
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+        
+        if self.tasks.isEmpty {
+            self.doneButtonTap()
+            // 모든 셀들이 삭제되면 편집 모드를 빠져나오도록
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return true
+        // 재정렬 가능하도록
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        // table cell 이 재정렬 된 순서로, 할 일을 저장하는 배열도 재정렬 되도록
+        var tasks = self.tasks
+        let task = tasks[sourceIndexPath.row] // 배열의 indexPath에 접근
+        tasks.remove(at: sourceIndexPath.row) // 원래 할 일을 삭제
+        tasks.insert(task, at: destinationIndexPath.row)
+        self.tasks = tasks // 재정렬된 배열을 넘겨준다.
     }
 }
 
