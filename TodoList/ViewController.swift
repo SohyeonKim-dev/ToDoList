@@ -10,6 +10,11 @@ import UIKit
 class ViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet var editButton: UIBarButtonItem!
+    // 메모리가 해제되지 않도록 strong으로 선언!
+    
+    var doneButton : UIBarButtonItem?
+    
     var tasks = [Task](){
         didSet {
             self.saveTasks()
@@ -18,13 +23,21 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTap))
         self.tableView.dataSource = self
         self.tableView.delegate = self
         self.loadTasks()
     }
+    
+    @objc func doneButtonTap(){
+        self.navigationItem.leftBarButtonItem = editButton
+        self.tableView.setEditing(false , animated: true)
+    }
 
     @IBAction func tapEditButton(_ sender: UIBarButtonItem) {
-
+        guard !self.tasks.isEmpty else { return }
+        self.navigationItem.leftBarButtonItem = doneButton
+        self.tableView.setEditing(true, animated: true)
     }
     
     @IBAction func tapAddButton(_ sender: UIBarButtonItem) {
